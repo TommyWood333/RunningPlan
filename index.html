@@ -301,6 +301,7 @@
       return "Z5";
     }
 function handleSignup() {
+  if (!window.auth) { alert('Firebase is still loading, try again in a moment'); return; }
   const email = document.getElementById('signupEmail')?.value;
   const password = document.getElementById('signupPassword')?.value;
   if (!email || !password) { alert('Email and password required'); return; }
@@ -315,6 +316,7 @@ function handleSignup() {
 }
 
 function handleSignin() {
+  if (!window.auth) { alert('Firebase is still loading, try again in a moment'); return; }
   const email = document.getElementById('signinEmail')?.value;
   const password = document.getElementById('signinPassword')?.value;
   if (!email || !password) { alert('Email and password required'); return; }
