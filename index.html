@@ -239,7 +239,6 @@
       {w:27,d:"Oct 31",day:"Sat",ph:"Race Week",s:"REST",z:"—",p:"Full rest. Early dinner, early bed. No heroics tomorrow."},
       {w:27,d:"Nov 1",day:"Sun",ph:"Race Week",s:"🏁 HALF MARATHON",z:"Race",p:"HALF MARATHON — Warm up 10–15min Z2, settle Z3 first 5km, build to Z4 through middle, leave it all in final 5km. Goal: sub-1:18, stretch: 1:15"}
     ];
-
     const SEED = {
       "Apr 28":{km:7,mins:40,hr:156,done:true},
       "May 1":{km:7,mins:35,hr:148,done:true},
@@ -254,15 +253,12 @@
       "May 14":{km:7.3,mins:40,hr:143,done:true},
       "May 16":{km:10,mins:55,hr:149,done:true}
     };
-
     const ZC = {Z1:"#93c5fd",Z2:"#4ade80",Z3:"#fbbf24",Z4:"#fb923c","Z4/Z5":"#fca5a5",Z5:"#f87171",Race:"#c4b5fd","—":"#64748b"};
     const STRAVA_CLIENT_ID = "246912";
     const STRAVA_REDIRECT = "https://tomwoodsrunningapp.vercel.app/api/strava-callback";
-    
     let S = {tab:"today",logs:{...SEED},exp:null,form:{},saved:false,viewWeek:null,strava:{connected:false,token:null,athlete:null}};
     const KEY = "tw-hm-v1";
     const STRAVA_KEY = "tw-hm-strava";
-
     (function() {
       try {
         const d = localStorage.getItem(KEY);
@@ -272,13 +268,12 @@
         const st = localStorage.getItem(STRAVA_KEY);
         if (st) S.strava = Object.assign({}, S.strava, JSON.parse(st));
       } catch(e) {}
+      if (S.strava.connected && S.strava.token) syncStrava();
     })();
-
     function parsePlannedKM(desc) {
       const match = desc.match(/(\d+(?:\.\d+)?)\s*km/);
       return match ? parseFloat(match[1]) : 0;
     }
-
     function getHRZone(hr) {
       if (hr < 135) return "Z1";
       if (hr < 145) return "Z2";
@@ -287,18 +282,15 @@
       if (hr < 180) return "Z4";
       return "Z5";
     }
-
     function stravaAuthUrl() {
       return "https://www.strava.com/oauth/authorize?client_id=" + STRAVA_CLIENT_ID +
-        "&redirect_uri=" + encodeURIComponent(STRAVA_REDIRECT) + "&response_type=code&scope=read";
+        "&redirect_uri=" + encodeURIComponent(STRAVA_REDIRECT) + "&response_type=code&scope=activity:read,read";
     }
-
     function saveStravaAuth() {
       try {
         localStorage.setItem(STRAVA_KEY, JSON.stringify({connected: S.strava.connected, token: S.strava.token, athlete: S.strava.athlete}));
       } catch(e) {}
     }
-
     function handleOAuthCallback() {
       const params = new URLSearchParams(window.location.search);
       const token = params.get("strava_token");
@@ -313,7 +305,6 @@
       syncStrava();
       render();
     }
-
     function syncStrava() {
       if (!S.strava.token) return;
       const MAY_1_2026 = 1746086400;
@@ -337,104 +328,97 @@
       })
       .catch(e => console.log('Strava sync error:', e));
     }
-
     function save() {
       try { localStorage.setItem(KEY, JSON.stringify(S.logs)); } catch(e) {}
       S.saved = true;
       setTimeout(() => { S.saved = false; render(); }, 1800);
     }
-
     function todayStr() {
       return new Date().toLocaleDateString("en-US", {month:"short", day:"numeric"});
     }
-
     function daysLeft() {
       const race = new Date("2026-11-01");
       const now = new Date();
       now.setHours(0, 0, 0, 0);
       return Math.max(0, Math.round((race - now) / 86400000));
     }
-
     function currentWeek() {
       const t = todayStr();
       const x = PLAN.find(p => p.d === t);
       return x ? x.w : 3;
     }
-
     function openForm(date) {
       if (S.exp === date) { S.exp = null; render(); return; }
       const ex = S.logs[date] || {};
-      S.form = {km: ex.km || "", mins: ex.mins || "", hr: ex.hr || "", done: ex.done || false};
+      S.form = {km: ex.km || "", mins: ex.mins || "", hr: ex.hr || "", done: ex.done || false, legFreshness: ex.legFreshness || "", aerobicFeel: ex.aerobicFeel || "", notes: ex.notes || ""};
       S.exp = date;
       render();
     }
-
     function saveEntry(date) {
       S.logs[date] = {
         km: S.form.km !== "" ? parseFloat(S.form.km) : null,
         mins: S.form.mins !== "" ? parseFloat(S.form.mins) : null,
         hr: S.form.hr !== "" ? parseFloat(S.form.hr) : null,
-        done: S.form.done
+        done: S.form.done,
+        legFreshness: S.form.legFreshness !== "" ? parseInt(S.form.legFreshness) : null,
+        aerobicFeel: S.form.aerobicFeel !== "" ? parseInt(S.form.aerobicFeel) : null,
+        notes: S.form.notes || ""
       };
       S.exp = null;
       save();
       render();
     }
-
     function zp(z) {
       return '<span style="display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:' + (ZC[z] || ZC["—"]) + ';color:#0f172a">' + z + '</span>';
     }
-
     function cardHtml(x, showDay, isToday) {
       const m = S.logs[x.d] || {};
       const isExp = S.exp === x.d;
       const isRest = x.s === "REST";
       const isDone = m.done;
-
       let html = '<div class="card' + (isToday ? ' hl' : '') + '"><div class="' + (isRest ? 'card-head rest' : 'card-head') + '"' +
         (!isRest ? ' onclick="openForm(\'' + x.d + '\')"' : '') + '>';
-
       if (showDay || isToday) {
         html += '<div style="display:flex;gap:8px;margin-bottom:4px">';
         if (showDay) html += '<span style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase">' + x.day + ' ' + x.d.split(' ')[1] + '</span>';
         if (isToday) html += '<span style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase">today</span>';
         html += '</div>';
       }
-
       html += '<div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="flex:1"><div style="font-size:15px;font-weight:500">' + x.s + '</div>';
-
       if (isDone && !isExp && m.km) {
         html += '<div style="margin-top:6px;display:flex;gap:10px;flex-wrap:wrap">';
         if (m.km) html += '<span style="font-size:12px;font-weight:600;color:var(--green)">' + m.km + ' km</span>';
         if (m.mins) html += '<span style="font-size:12px;color:var(--muted)">' + m.mins + ' min</span>';
         if (m.hr) html += '<span style="font-size:12px;color:var(--amber)">♥ ' + m.hr + '</span>';
+        if (m.legFreshness) html += '<span style="font-size:12px;color:#60a5fa">Legs: ' + m.legFreshness + '</span>';
+        if (m.aerobicFeel) html += '<span style="font-size:12px;color:#fbbf24">Aero: ' + m.aerobicFeel + '</span>';
         html += '</div>';
+        if (m.notes) html += '<p style="margin-top:6px;font-size:12px;color:var(--muted);font-style:italic">' + m.notes.substring(0,60) + (m.notes.length > 60 ? '...' : '') + '</p>';
       }
-
       html += '</div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0">' + (!isRest ? zp(x.z) : '') + '</div></div>' +
         (!isRest ? '<p style="margin:6px 0 0;font-size:13px;color:var(--muted)">' + x.p + '</p>' : '');
-
       if (isExp) {
         const f = S.form;
         html += '<div class="card-form"><div class="metric-grid">' +
           '<div><label class="metric-label">KM</label><input type="number" value="' + (f.km || '') + '" placeholder="0" oninput="S.form.km=this.value" onclick="event.stopPropagation()" style="font-size:18px"></div>' +
           '<div><label class="metric-label">Mins</label><input type="number" value="' + (f.mins || '') + '" placeholder="0" oninput="S.form.mins=this.value" onclick="event.stopPropagation()" style="font-size:18px"></div>' +
           '<div><label class="metric-label">HR</label><input type="number" value="' + (f.hr || '') + '" placeholder="0" oninput="S.form.hr=this.value" onclick="event.stopPropagation()" style="font-size:18px"></div>' +
-          '</div><label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;margin-bottom:10px" onclick="event.stopPropagation()">' +
+          '</div><div class="metric-grid">' +
+          '<div><label class="metric-label">Leg Fresh</label><input type="number" value="' + (f.legFreshness || '') + '" placeholder="1-10" min="1" max="10" oninput="S.form.legFreshness=this.value" onclick="event.stopPropagation()"></div>' +
+          '<div><label class="metric-label">Aerobic Feel</label><input type="number" value="' + (f.aerobicFeel || '') + '" placeholder="1-10" min="1" max="10" oninput="S.form.aerobicFeel=this.value" onclick="event.stopPropagation()"></div>' +
+          '</div><label style="display:block;margin-bottom:10px" onclick="event.stopPropagation()"><label class="metric-label">Notes</label><textarea placeholder="How did you feel?" oninput="S.form.notes=this.value" onclick="event.stopPropagation()" style="min-height:60px">' + (f.notes || '') + '</textarea></label>' +
+          '<label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;margin-bottom:10px" onclick="event.stopPropagation()">' +
           '<input type="checkbox" ' + (f.done ? 'checked' : '') + ' onchange="S.form.done=this.checked" style="width:16px;height:16px"> Mark done</label>' +
           '<div style="display:flex;gap:10px" onclick="event.stopPropagation()"><button class="btn-ghost" onclick="S.exp=null;render()">Cancel</button>' +
           '<button class="btn-save" onclick="saveEntry(\'' + x.d + '\')">Save ✓</button></div></div>';
       }
-
       html += '</div>';
       return html;
     }
-
     function todayView() {
       const t = todayStr();
       const x = PLAN.find(p => p.d === t);
       if (!x) return '<div style="padding:40px 20px;text-align:center;color:var(--muted)"><div style="font-size:40px">🗓️</div><p style="margin-top:12px">Today is outside the plan</p></div>';
-
       const cw = x.w;
       return '<div class="phase-banner"><div><div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase">Week ' + x.w + '</div><div style="font-size:13px;font-weight:500">' + x.ph + '</div></div><div style="text-align:right"><div style="font-size:28px;font-weight:600">' + daysLeft() + '</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase">days to go</div></div></div>' +
         '<div style="padding:14px 16px">' +
@@ -442,7 +426,6 @@
           '<button class="btn-strava" onclick="window.location.href=\'' + stravaAuthUrl() + '\'">Connect Strava</button>') +
         '<div class="section-label">Today</div>' + cardHtml(x, false, true) + '</div>';
     }
-
     function weekView() {
       const vw = S.viewWeek || currentWeek();
       const t = todayStr();
@@ -451,7 +434,6 @@
       const runs = ws.filter(p => S.logs[p.d]?.done && p.s !== "REST");
       const km = runs.reduce((s, p) => s + (S.logs[p.d]?.km || 0), 0);
       const ph = ws[0]?.ph || "";
-
       return '<div class="week-nav"><button class="nav-btn" onclick="S.viewWeek=Math.max(1,(S.viewWeek||' + cw + ')-1);render()" ' +
         (vw <= 1 ? 'disabled' : '') + '>◀</button>' +
         '<div style="flex:1;text-align:center"><div style="font-size:15px;font-weight:500">Week ' + vw + (vw === cw ? ' · now' : '') + '</div><div style="font-size:12px;color:var(--muted)">' + ph + '</div></div>' +
@@ -461,7 +443,6 @@
         '<div class="stat-card"><div style="font-size:22px;font-weight:600">' + runs.length + '/' + ws.filter(p => p.s !== "REST").length + '</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px">sessions done</div></div></div>' +
         '<div style="padding:0 16px 16px">' + ws.map(p => cardHtml(p, true, p.d === t)).join('') + '</div>';
     }
-
     function logView() {
       const cw = currentWeek();
       const t = todayStr();
@@ -483,12 +464,10 @@
       html += '</div>';
       return html;
     }
-
     function statsView() {
       const cw = currentWeek();
       const allDone = PLAN.filter(p => S.logs[p.d]?.done && p.s !== "REST");
       const totalKM = allDone.reduce((s, p) => s + (S.logs[p.d]?.km || 0), 0);
-
       let maxKM = 0;
       const chartData = [];
       for (let w = 1; w <= cw; w++) {
@@ -498,7 +477,6 @@
         if (km > maxKM) maxKM = km;
       }
       if (maxKM === 0) maxKM = 25;
-
       let chartHtml = '<div class="info-block"><div class="section-label">Weekly KM</div><div style="display:flex;align-items:flex-end;gap:4px;height:100px;padding:20px 0">';
       chartData.forEach(({w, km}) => {
         const h = Math.round((km / maxKM) * 80);
@@ -507,7 +485,41 @@
           '<div style="font-size:9px;color:var(--muted);margin-top:4px">W' + w + '</div></div>';
       });
       chartHtml += '</div></div>';
-
+      let freshData = [];
+      let aeroData = [];
+      for (let w = 1; w <= cw; w++) {
+        const ws = PLAN.filter(p => p.w === w);
+        const fresh = ws.filter(p => S.logs[p.d]?.done && S.logs[p.d]?.legFreshness).map(p => S.logs[p.d].legFreshness);
+        const aero = ws.filter(p => S.logs[p.d]?.done && S.logs[p.d]?.aerobicFeel).map(p => S.logs[p.d].aerobicFeel);
+        const avgFresh = fresh.length > 0 ? (fresh.reduce((s, v) => s + v, 0) / fresh.length).toFixed(1) : null;
+        const avgAero = aero.length > 0 ? (aero.reduce((s, v) => s + v, 0) / aero.length).toFixed(1) : null;
+        if (avgFresh) freshData.push({w, val: parseFloat(avgFresh)});
+        if (avgAero) aeroData.push({w, val: parseFloat(avgAero)});
+      }
+      let freshHtml = '<div class="info-block"><div class="section-label">Leg Freshness</div>';
+      if (freshData.length > 0) {
+        freshHtml += '<div style="display:flex;align-items:flex-end;gap:4px;height:80px;padding:20px 0">';
+        freshData.forEach(({w, val}) => {
+          const h = Math.round((val / 10) * 60);
+          freshHtml += '<div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="font-size:9px;color:var(--text);height:14px">' + val + '</div><div style="width:100%;height:' + Math.max(2, h) + 'px;background:#60a5fa;border-radius:2px"></div><div style="font-size:8px;color:var(--muted);margin-top:2px">W' + w + '</div></div>';
+        });
+        freshHtml += '</div>';
+      } else {
+        freshHtml += '<div style="color:var(--muted);font-size:12px;padding:12px 0">Log runs with leg freshness to see trend</div>';
+      }
+      freshHtml += '</div>';
+      let aeroHtml = '<div class="info-block"><div class="section-label">Aerobic Feel</div>';
+      if (aeroData.length > 0) {
+        aeroHtml += '<div style="display:flex;align-items:flex-end;gap:4px;height:80px;padding:20px 0">';
+        aeroData.forEach(({w, val}) => {
+          const h = Math.round((val / 10) * 60);
+          aeroHtml += '<div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="font-size:9px;color:var(--text);height:14px">' + val + '</div><div style="width:100%;height:' + Math.max(2, h) + 'px;background:#fbbf24;border-radius:2px"></div><div style="font-size:8px;color:var(--muted);margin-top:2px">W' + w + '</div></div>';
+        });
+        aeroHtml += '</div>';
+      } else {
+        aeroHtml += '<div style="color:var(--muted);font-size:12px;padding:12px 0">Log runs with aerobic feel to see trend</div>';
+      }
+      aeroHtml += '</div>';
       const zoneData = {Z1:0, Z2:0, Z3:0, Z4:0, Z5:0};
       allDone.forEach(p => {
         const log = S.logs[p.d];
@@ -528,13 +540,12 @@
         zoneHtml += '<div style="color:var(--muted);font-size:12px;padding:12px 0">Log runs with HR data to see zones</div>';
       }
       zoneHtml += '</div>';
-
       const races = PLAN.filter(p => p.z === "Race");
       return '<div style="padding:16px"><div class="section-label">Stats</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">' +
         '<div class="stat-card"><div style="font-size:22px;font-weight:600;color:var(--green)">' + totalKM.toFixed(1) + '</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px">Total KM</div></div>' +
         '<div class="stat-card"><div style="font-size:22px;font-weight:600">' + daysLeft() + '</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px">Days left</div></div>' +
-        '</div>' + chartHtml + zoneHtml +
+        '</div>' + chartHtml + freshHtml + aeroHtml + zoneHtml +
         '<div class="info-block"><div class="section-label">Goal Races</div>' +
         races.map(r => {
           const rname = r.s.replace('🏁 ', '');
@@ -543,7 +554,6 @@
             (log?.done ? '<span style="color:var(--green);font-weight:600">✓</span>' : '<span style="font-size:11px;background:' + (ZC.Race || '#c4b5fd') + ';color:#1e293b;padding:2px 8px;border-radius:20px;font-weight:600">upcoming</span>') + '</div>';
         }).join('') + '</div>';
     }
-
     function render() {
       const t = todayStr();
       let content = '';
@@ -551,7 +561,6 @@
       else if (S.tab === 'week') content = weekView();
       else if (S.tab === 'log') content = logView();
       else content = statsView();
-
       document.getElementById('app').innerHTML =
         '<div class="sticky"><div style="padding:10px 16px 8px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:14px;font-weight:500">Half Marathon Plan</div><div style="font-size:11px;color:var(--muted)">Goal: sub-1:18 · Nov 1, 2026</div></div>' +
         (S.saved ? '<span style="font-size:12px;color:var(--green);font-weight:600">Saved ✓</span>' : '') +
@@ -562,7 +571,6 @@
         '<button class="tab-btn' + (S.tab === 'stats' ? ' on' : '') + '" onclick="S.tab=\'stats\';render()">📊<span>Stats</span></button>' +
         '</div></div><div class="content">' + content + '</div>';
     }
-
     handleOAuthCallback();
     render();
   </script>
