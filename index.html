@@ -3,473 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="HM Plan">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0f172a">
 <title>Tom Wood — HM Plan</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0f172a;--surface:#1e293b;--surface2:#0d1829;
-  --border:#334155;--text:#f1f5f9;--muted:#64748b;
-  --green:#4ade80;--green-bg:#052e16;--green-text:#052e16;
-  --amber:#fbbf24;--amber-bg:#292524;
-  --red:#f87171;--red-bg:#450a0a;
-  --blue:#93c5fd;--blue-bg:#082f49;
-  --purple:#c4b5fd;--purple-bg:#2e1065;
-}
+:root{--bg:#0f172a;--surface:#1e293b;--surface2:#0d1829;--border:#334155;--text:#f1f5f9;--muted:#64748b;--green:#4ade80;--amber:#fbbf24;--red:#f87171;--blue:#93c5fd;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;overflow-x:hidden}
-#app{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column}
+#app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
 .sticky{position:sticky;top:0;z-index:20;background:var(--bg)}
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px}
-button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-button:active{opacity:.75}
-button:disabled{opacity:.3;cursor:default}
+.content{flex:1;overflow-y:auto;padding-bottom:20px}
+button{font-family:inherit;cursor:pointer;border:none;-webkit-tap-highlight-color:transparent}
+button:active{opacity:.75}button:disabled{opacity:.3;cursor:default}
 input,textarea{font-family:inherit;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 8px;font-size:16px;outline:none;width:100%}
 input[type=number]{text-align:center;font-weight:600;-moz-appearance:textfield}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 textarea{resize:none;line-height:1.4}
 input:focus,textarea:focus{border-color:var(--green)}
-.zone-pill{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:.05em;white-space:nowrap}
+.zone-pill{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
 .card{background:var(--surface);border-radius:12px;border:1px solid var(--border);margin-bottom:8px;overflow:hidden}
 .card.hl{border-color:#22c55e55}
-.card-head{padding:12px 14px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.card-head{padding:12px 14px;cursor:pointer;user-select:none}
 .card-head.rest{cursor:default;opacity:.65}
 .card-form{padding:0 14px 14px;border-top:1px solid var(--border)}
 .metric-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}
 .metric-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
-.stars{display:flex;gap:5px}
-.star{width:38px;height:38px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:center}
-.star.on-b{background:var(--blue);border-color:var(--blue);color:var(--blue-bg);font-weight:700}
-.star.on-g{background:var(--green);border-color:var(--green);color:var(--green-text);font-weight:700}
 .btn-ghost{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:8px 14px;font-size:13px;border-radius:8px}
-.btn-save{background:var(--green);color:var(--green-text);border:none;padding:8px 16px;font-size:13px;font-weight:700;border-radius:8px}
-.btn-strava{background:var(--blue);color:var(--blue-bg);border:none;padding:8px 14px;font-size:13px;font-weight:600;border-radius:8px}
-.btn-strava:hover{opacity:.9}
-.btn-disconnect{background:var(--red);color:white;border:none;padding:8px 14px;font-size:13px;font-weight:600;border-radius:8px}
+.btn-save{background:var(--green);color:#052e16;border:none;padding:8px 16px;font-size:13px;font-weight:700;border-radius:8px}
+.btn-strava{background:var(--blue);color:#082f49;border:none;padding:8px 14px;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer}
 .tab-bar{display:flex;border-top:1px solid var(--border)}
-.tab-btn{flex:1;padding:10px 4px 8px;background:none;border:none;color:var(--muted);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tab-btn{flex:1;padding:10px 4px 8px;background:none;border:none;color:var(--muted);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
 .tab-btn.on{color:var(--green)}
-.tab-btn .ic{font-size:20px}
 .stat-card{background:var(--surface);border-radius:8px;padding:12px 14px;border:1px solid var(--border)}
 .info-block{background:var(--surface);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:12px}
 .section-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-.bar-chart{display:flex;align-items:flex-end;gap:3px;height:70px}
-.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
-.bar{width:100%;border-radius:2px 2px 0 0;background:var(--surface2)}
-.bar.cur{background:var(--green)}
-.bar-lbl{font-size:9px;color:var(--muted)}
-.week-nav{display:flex;align-items:center;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);gap:8px}
-.nav-btn{width:36px;height:36px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0}
 .phase-banner{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.strava-badge{display:inline-block;font-size:10px;font-weight:600;padding:4px 8px;border-radius:4px;background:var(--blue);color:var(--blue-bg);margin-left:4px}
-.strava-status{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--surface);border-radius:8px;margin-bottom:10px;font-size:12px}
-.strava-status.connected{border:1px solid #4ade80}
-.strava-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.strava-badge{display:inline-block;font-size:10px;font-weight:600;padding:4px 8px;border-radius:4px;background:var(--blue);color:#082f49;margin-left:4px}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
-// ─── PLAN DATA ───────────────────────────────────────────────────────────────
-const PLAN=[
-{w:1,d:"Apr 27",day:"Mon",ph:"Base I — Aerobic Foundation",s:"Easy Run",z:"Z2",p:"5km easy Z2 (145–155bpm) — relaxed, focus on cadence"},
-{w:1,d:"Apr 28",day:"Tue",ph:"Base I — Aerobic Foundation",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:1,d:"Apr 29",day:"Wed",ph:"Base I — Aerobic Foundation",s:"REST",z:"—",p:"Full rest — no running."},
-{w:1,d:"Apr 30",day:"Thu",ph:"Base I — Aerobic Foundation",s:"Easy + Drills",z:"Z1",p:"5km Z1 easy (<135bpm) + 10min running drills & form work"},
-{w:1,d:"May 1",day:"Fri",ph:"Base I — Aerobic Foundation",s:"Aerobic Build",z:"Z2/Z3",p:"7km progressive — first half Z2, second half Z3 (156–167bpm)"},
-{w:1,d:"May 2",day:"Sat",ph:"Base I — Aerobic Foundation",s:"🏁 5 Peaks – Kelso",z:"Race",p:"RACE: 5 Peaks – Kelso (B-Race) — run hard but controlled, treat as a quality workout"},
-{w:1,d:"May 3",day:"Sun",ph:"Base I — Aerobic Foundation",s:"Long Run",z:"Z2",p:"12km long run — entirely Z2 (145–155bpm), run/hike hills freely"},
-{w:2,d:"May 4",day:"Mon",ph:"Base I — Aerobic Foundation",s:"Easy Run",z:"Z2",p:"6km easy Z2 (145–155bpm) — relaxed, focus on cadence"},
-{w:2,d:"May 5",day:"Tue",ph:"Base I — Aerobic Foundation",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:2,d:"May 6",day:"Wed",ph:"Base I — Aerobic Foundation",s:"REST",z:"—",p:"Full rest — no running."},
-{w:2,d:"May 7",day:"Thu",ph:"Base I — Aerobic Foundation",s:"Easy + Drills",z:"Z1",p:"5km Z1 easy (<135bpm) + 10min running drills & form work"},
-{w:2,d:"May 8",day:"Fri",ph:"Base I — Aerobic Foundation",s:"Aerobic Build",z:"Z2/Z3",p:"8km progressive — first half Z2, second half Z3 (156–167bpm)"},
-{w:2,d:"May 9",day:"Sat",ph:"Base I — Aerobic Foundation",s:"Strides + Easy",z:"Z2",p:"6km easy Z2 + 6×20s strides (full recovery between)"},
-{w:2,d:"May 10",day:"Sun",ph:"Base I — Aerobic Foundation",s:"Long Run",z:"Z2",p:"13km long run — entirely Z2 (145–155bpm), run/hike hills freely"},
-{w:3,d:"May 11",day:"Mon",ph:"Base I — Aerobic Foundation",s:"Easy Run",z:"Z2",p:"7km easy Z2 (145–155bpm) — relaxed, focus on cadence"},
-{w:3,d:"May 12",day:"Tue",ph:"Base I — Aerobic Foundation",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:3,d:"May 13",day:"Wed",ph:"Base I — Aerobic Foundation",s:"REST",z:"—",p:"Full rest — no running."},
-{w:3,d:"May 14",day:"Thu",ph:"Base I — Aerobic Foundation",s:"Easy + Drills",z:"Z1",p:"6km Z1 easy (<135bpm) + 10min running drills & form work"},
-{w:3,d:"May 15",day:"Fri",ph:"Base I — Aerobic Foundation",s:"Aerobic Build",z:"Z2/Z3",p:"9km progressive — first half Z2, second half Z3 (156–167bpm)"},
-{w:3,d:"May 16",day:"Sat",ph:"Base I — Aerobic Foundation",s:"Strides + Easy",z:"Z2",p:"6km easy Z2 + 6×20s strides (full recovery between)"},
-{w:3,d:"May 17",day:"Sun",ph:"Base I — Aerobic Foundation",s:"Long Run",z:"Z2",p:"15km long run — entirely Z2 (145–155bpm), run/hike hills freely"},
-{w:4,d:"May 18",day:"Mon",ph:"Base I — Aerobic Foundation",s:"Easy Run",z:"Z2",p:"5km easy Z2 (145–155bpm) — relaxed, focus on cadence"},
-{w:4,d:"May 19",day:"Tue",ph:"Base I — Aerobic Foundation",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:4,d:"May 20",day:"Wed",ph:"Base I — Aerobic Foundation",s:"REST",z:"—",p:"Full rest — no running."},
-{w:4,d:"May 21",day:"Thu",ph:"Base I — Aerobic Foundation",s:"Easy + Drills",z:"Z1",p:"4km Z1 easy (<135bpm) + 10min running drills & form work"},
-{w:4,d:"May 22",day:"Fri",ph:"Base I — Aerobic Foundation",s:"Aerobic Build",z:"Z2/Z3",p:"6km progressive — first half Z2, second half Z3 (156–167bpm)"},
-{w:4,d:"May 23",day:"Sat",ph:"Base I — Aerobic Foundation",s:"🏁 Sulphur Springs 20k Relay",z:"Race",p:"RACE: Sulphur Springs 20k Relay (B-Race) — run hard but controlled, treat as a quality workout"},
-{w:4,d:"May 24",day:"Sun",ph:"Base I — Aerobic Foundation",s:"Long Run",z:"Z2",p:"11km long run — entirely Z2 (145–155bpm), run/hike hills freely"},
-{w:5,d:"May 25",day:"Mon",ph:"Base II — Volume Build",s:"Easy Run",z:"Z2",p:"7km easy Z2 (145–155bpm) — relaxed, focus on cadence"},
-{w:5,d:"May 26",day:"Tue",ph:"Base II — Volume Build",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:5,d:"May 27",day:"Wed",ph:"Base II — Volume Build",s:"REST",z:"—",p:"Full rest — no running."},
-{w:5,d:"May 28",day:"Thu",ph:"Base II — Volume Build",s:"Easy + Drills",z:"Z1",p:"6km Z1 easy (<135bpm) + 10min running drills & form work"},
-{w:5,d:"May 29",day:"Fri",ph:"Base II — Volume Build",s:"Aerobic Build",z:"Z2/Z3",p:"8km progressive — first half Z2, second half Z3 (156–167bpm)"},
-{w:5,d:"May 30",day:"Sat",ph:"Base II — Volume Build",s:"Strides + Easy",z:"Z2",p:"6km easy Z2 + 6×20s strides (full recovery between)"},
-{w:5,d:"May 31",day:"Sun",ph:"Base II — Volume Build",s:"Long Run",z:"Z2",p:"15km long run — entirely Z2 (145–155bpm), run/hike hills freely"},
-{w:6,d:"Jun 1",day:"Mon",ph:"Base II — Volume Build",s:"Easy Run",z:"Z2",p:"5km easy Z2 (145–155bpm) — relaxed, focus on cadence"},
-{w:6,d:"Jun 2",day:"Tue",ph:"Base II — Volume Build",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:6,d:"Jun 3",day:"Wed",ph:"Base II — Volume Build",s:"REST",z:"—",p:"Full rest — no running."},
-{w:6,d:"Jun 4",day:"Thu",ph:"Base II — Volume Build",s:"Easy + Drills",z:"Z1",p:"5km Z1 easy (<135bpm) + 10min running drills & form work"},
-{w:6,d:"Jun 5",day:"Fri",ph:"Base II — Volume Build",s:"Aerobic Build",z:"Z2/Z3",p:"7km progressive — first half Z2, second half Z3 (156–167bpm)"},
-{w:6,d:"Jun 6",day:"Sat",ph:"Base II — Volume Build",s:"🏁 5 Peaks – Crawford Lake",z:"Race",p:"RACE: 5 Peaks – Crawford Lake (B-Race) — run hard but controlled, treat as a quality workout"},
-{w:6,d:"Jun 7",day:"Sun",ph:"Base II — Volume Build",s:"Long Run",z:"Z2",p:"12km long run — entirely Z2 (145–155bpm), run/hike hills freely"},
-{w:7,d:"Jun 8",day:"Mon",ph:"Base II — Volume Build",s:"Easy Run",z:"Z2",p:"8km easy Z2 (145–155bpm) — relaxed, focus on cadence"},
-{w:7,d:"Jun 9",day:"Tue",ph:"Base II — Volume Build",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:7,d:"Jun 10",day:"Wed",ph:"Base II — Volume Build",s:"REST",z:"—",p:"Full rest — no running."},
-{w:7,d:"Jun 11",day:"Thu",ph:"Base II — Volume Build",s:"Easy + Drills",z:"Z1",p:"7km Z1 easy (<135bpm) + 10min running drills & form work"},
-{w:7,d:"Jun 12",day:"Fri",ph:"Base II — Volume Build",s:"Aerobic Build",z:"Z2/Z3",p:"10km progressive — first half Z2, second half Z3 (156–167bpm)"},
-{w:7,d:"Jun 13",day:"Sat",ph:"Base II — Volume Build",s:"Strides + Easy",z:"Z2",p:"7km easy Z2 + 6×20s strides (full recovery between)"},
-{w:7,d:"Jun 14",day:"Sun",ph:"Base II — Volume Build",s:"Long Run",z:"Z2",p:"17km long run — entirely Z2 (145–155bpm), run/hike hills freely"},
-{w:8,d:"Jun 15",day:"Mon",ph:"Base II — Volume Build",s:"Easy Run",z:"Z2",p:"6km easy Z2 (145–155bpm) — relaxed, focus on cadence"},
-{w:8,d:"Jun 16",day:"Tue",ph:"Base II — Volume Build",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:8,d:"Jun 17",day:"Wed",ph:"Base II — Volume Build",s:"REST",z:"—",p:"Full rest — no running."},
-{w:8,d:"Jun 18",day:"Thu",ph:"Base II — Volume Build",s:"Easy + Drills",z:"Z1",p:"5km Z1 easy (<135bpm) + 10min running drills & form work"},
-{w:8,d:"Jun 19",day:"Fri",ph:"Base II — Volume Build",s:"Aerobic Build",z:"Z2/Z3",p:"7km progressive — first half Z2, second half Z3 (156–167bpm)"},
-{w:8,d:"Jun 20",day:"Sat",ph:"Base II — Volume Build",s:"Strides + Easy",z:"Z2",p:"5km easy Z2 + 6×20s strides (full recovery between)"},
-{w:8,d:"Jun 21",day:"Sun",ph:"Base II — Volume Build",s:"Long Run",z:"Z2",p:"13km long run — entirely Z2 (145–155bpm), run/hike hills freely"},
-{w:9,d:"Jun 22",day:"Mon",ph:"Build I — Strength & Tempo",s:"Easy Run",z:"Z2",p:"8km easy Z2 (145–155bpm)"},
-{w:9,d:"Jun 23",day:"Tue",ph:"Build I — Strength & Tempo",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:9,d:"Jun 24",day:"Wed",ph:"Build I — Strength & Tempo",s:"REST",z:"—",p:"Full rest."},
-{w:9,d:"Jun 25",day:"Thu",ph:"Build I — Strength & Tempo",s:"Hill Repeats",z:"Z4/Z5",p:"2km warm-up + 8×90s hill Z4–5 (hard, jog down recovery) + 2km cool-down"},
-{w:9,d:"Jun 26",day:"Fri",ph:"Build I — Strength & Tempo",s:"Tempo Intervals",z:"Z4",p:"2km warm-up + 4×8min Z4 (168–175bpm) w/ 2min jog rest + 2km cool-down"},
-{w:9,d:"Jun 27",day:"Sat",ph:"Build I — Strength & Tempo",s:"Easy + Strides",z:"Z2",p:"7km easy Z2 + 4×20s strides"},
-{w:9,d:"Jun 28",day:"Sun",ph:"Build I — Strength & Tempo",s:"Long Run",z:"Z2/Z3",p:"18km — mostly Z2, push final 20% into Z3"},
-{w:10,d:"Jun 29",day:"Mon",ph:"Build I — Strength & Tempo",s:"Easy Run",z:"Z2",p:"9km easy Z2 (145–155bpm)"},
-{w:10,d:"Jun 30",day:"Tue",ph:"Build I — Strength & Tempo",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:10,d:"Jul 1",day:"Wed",ph:"Build I — Strength & Tempo",s:"REST",z:"—",p:"Full rest."},
-{w:10,d:"Jul 2",day:"Thu",ph:"Build I — Strength & Tempo",s:"Hill Repeats",z:"Z4/Z5",p:"2km warm-up + 8×90s hill Z4–5 (hard, jog down recovery) + 2km cool-down"},
-{w:10,d:"Jul 3",day:"Fri",ph:"Build I — Strength & Tempo",s:"Tempo Intervals",z:"Z4",p:"2km warm-up + 4×8min Z4 (168–175bpm) w/ 2min jog rest + 2km cool-down"},
-{w:10,d:"Jul 4",day:"Sat",ph:"Build I — Strength & Tempo",s:"Easy + Strides",z:"Z2",p:"8km easy Z2 + 4×20s strides"},
-{w:10,d:"Jul 5",day:"Sun",ph:"Build I — Strength & Tempo",s:"Long Run",z:"Z2/Z3",p:"20km — mostly Z2, push final 20% into Z3"},
-{w:11,d:"Jul 6",day:"Mon",ph:"Build I — Strength & Tempo",s:"Easy Run",z:"Z2",p:"10km easy Z2 (145–155bpm)"},
-{w:11,d:"Jul 7",day:"Tue",ph:"Build I — Strength & Tempo",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:11,d:"Jul 8",day:"Wed",ph:"Build I — Strength & Tempo",s:"REST",z:"—",p:"Full rest."},
-{w:11,d:"Jul 9",day:"Thu",ph:"Build I — Strength & Tempo",s:"Hill Repeats",z:"Z4/Z5",p:"2km warm-up + 8×90s hill Z4–5 (hard, jog down recovery) + 2km cool-down"},
-{w:11,d:"Jul 10",day:"Fri",ph:"Build I — Strength & Tempo",s:"Tempo Intervals",z:"Z4",p:"2km warm-up + 4×8min Z4 (168–175bpm) w/ 2min jog rest + 2km cool-down"},
-{w:11,d:"Jul 11",day:"Sat",ph:"Build I — Strength & Tempo",s:"Easy + Strides",z:"Z2",p:"8km easy Z2 + 4×20s strides"},
-{w:11,d:"Jul 12",day:"Sun",ph:"Build I — Strength & Tempo",s:"Long Run",z:"Z2/Z3",p:"21km — mostly Z2, push final 20% into Z3"},
-{w:12,d:"Jul 13",day:"Mon",ph:"Build I — Strength & Tempo",s:"Easy Run",z:"Z2",p:"5km easy Z2 (145–155bpm)"},
-{w:12,d:"Jul 14",day:"Tue",ph:"Build I — Strength & Tempo",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:12,d:"Jul 15",day:"Wed",ph:"Build I — Strength & Tempo",s:"REST",z:"—",p:"Full rest."},
-{w:12,d:"Jul 16",day:"Thu",ph:"Build I — Strength & Tempo",s:"Hill Repeats",z:"Z4/Z5",p:"2km warm-up + 8×90s hill Z4–5 (hard, jog down recovery) + 2km cool-down"},
-{w:12,d:"Jul 17",day:"Fri",ph:"Build I — Strength & Tempo",s:"Tempo Intervals",z:"Z4",p:"2km warm-up + 4×8min Z4 (168–175bpm) w/ 2min jog rest + 2km cool-down"},
-{w:12,d:"Jul 18",day:"Sat",ph:"Build I — Strength & Tempo",s:"🏁 5 Peaks – Area 8",z:"Race",p:"RACE: 5 Peaks – Area 8 (B-Race) — run hard but controlled, treat as a quality workout"},
-{w:12,d:"Jul 19",day:"Sun",ph:"Build I — Strength & Tempo",s:"Long Run",z:"Z2/Z3",p:"12km — mostly Z2, push final 20% into Z3"},
-{w:13,d:"Jul 20",day:"Mon",ph:"Build I — Strength & Tempo",s:"Easy Run",z:"Z2",p:"9km easy Z2 (145–155bpm)"},
-{w:13,d:"Jul 21",day:"Tue",ph:"Build I — Strength & Tempo",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:13,d:"Jul 22",day:"Wed",ph:"Build I — Strength & Tempo",s:"REST",z:"—",p:"Full rest."},
-{w:13,d:"Jul 23",day:"Thu",ph:"Build I — Strength & Tempo",s:"Hill Repeats",z:"Z4/Z5",p:"2km warm-up + 8×90s hill Z4–5 (hard, jog down recovery) + 2km cool-down"},
-{w:13,d:"Jul 24",day:"Fri",ph:"Build I — Strength & Tempo",s:"Tempo Intervals",z:"Z4",p:"2km warm-up + 4×8min Z4 (168–175bpm) w/ 2min jog rest + 2km cool-down"},
-{w:13,d:"Jul 25",day:"Sat",ph:"Build I — Strength & Tempo",s:"Easy + Strides",z:"Z2",p:"7km easy Z2 + 4×20s strides"},
-{w:13,d:"Jul 26",day:"Sun",ph:"Build I — Strength & Tempo",s:"Long Run",z:"Z2/Z3",p:"19km — mostly Z2, push final 20% into Z3"},
-{w:14,d:"Jul 27",day:"Mon",ph:"Build II — Race Specific",s:"Easy Run",z:"Z2",p:"10km easy Z2 (145–155bpm)"},
-{w:14,d:"Jul 28",day:"Tue",ph:"Build II — Race Specific",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:14,d:"Jul 29",day:"Wed",ph:"Build II — Race Specific",s:"REST",z:"—",p:"Full rest."},
-{w:14,d:"Jul 30",day:"Thu",ph:"Build II — Race Specific",s:"Hill Repeats",z:"Z4/Z5",p:"2km warm-up + 8×90s hill Z4–5 (hard, jog down recovery) + 2km cool-down"},
-{w:14,d:"Jul 31",day:"Fri",ph:"Build II — Race Specific",s:"Tempo Intervals",z:"Z4",p:"2km warm-up + 4×8min Z4 (168–175bpm) w/ 2min jog rest + 2km cool-down"},
-{w:14,d:"Aug 1",day:"Sat",ph:"Build II — Race Specific",s:"Easy + Strides",z:"Z2",p:"8km easy Z2 + 4×20s strides"},
-{w:14,d:"Aug 2",day:"Sun",ph:"Build II — Race Specific",s:"Long Run",z:"Z2/Z3",p:"21km — mostly Z2, push final 20% into Z3"},
-{w:15,d:"Aug 3",day:"Mon",ph:"Build II — Race Specific",s:"Easy Run",z:"Z2",p:"10km easy Z2 (145–155bpm)"},
-{w:15,d:"Aug 4",day:"Tue",ph:"Build II — Race Specific",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:15,d:"Aug 5",day:"Wed",ph:"Build II — Race Specific",s:"REST",z:"—",p:"Full rest."},
-{w:15,d:"Aug 6",day:"Thu",ph:"Build II — Race Specific",s:"Hill Repeats",z:"Z4/Z5",p:"2km warm-up + 8×90s hill Z4–5 (hard, jog down recovery) + 2km cool-down"},
-{w:15,d:"Aug 7",day:"Fri",ph:"Build II — Race Specific",s:"Tempo Intervals",z:"Z4",p:"2km warm-up + 4×8min Z4 (168–175bpm) w/ 2min jog rest + 2km cool-down"},
-{w:15,d:"Aug 8",day:"Sat",ph:"Build II — Race Specific",s:"Easy + Strides",z:"Z2",p:"9km easy Z2 + 4×20s strides"},
-{w:15,d:"Aug 9",day:"Sun",ph:"Build II — Race Specific",s:"Long Run",z:"Z2/Z3",p:"22km — mostly Z2, push final 20% into Z3"},
-{w:16,d:"Aug 10",day:"Mon",ph:"Build II — Race Specific",s:"Easy Run",z:"Z2",p:"8km easy Z2 (145–155bpm)"},
-{w:16,d:"Aug 11",day:"Tue",ph:"Build II — Race Specific",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:16,d:"Aug 12",day:"Wed",ph:"Build II — Race Specific",s:"REST",z:"—",p:"Full rest."},
-{w:16,d:"Aug 13",day:"Thu",ph:"Build II — Race Specific",s:"Hill Repeats",z:"Z4/Z5",p:"2km warm-up + 8×90s hill Z4–5 (hard, jog down recovery) + 2km cool-down"},
-{w:16,d:"Aug 14",day:"Fri",ph:"Build II — Race Specific",s:"Tempo Intervals",z:"Z4",p:"2km warm-up + 4×8min Z4 (168–175bpm) w/ 2min jog rest + 2km cool-down"},
-{w:16,d:"Aug 15",day:"Sat",ph:"Build II — Race Specific",s:"Easy + Strides",z:"Z2",p:"6km easy Z2 + 4×20s strides"},
-{w:16,d:"Aug 16",day:"Sun",ph:"Build II — Race Specific",s:"Long Run",z:"Z2/Z3",p:"16km — mostly Z2, push final 20% into Z3"},
-{w:17,d:"Aug 17",day:"Mon",ph:"Build II — Race Specific",s:"Easy Run",z:"Z2",p:"10km easy Z2 (145–155bpm)"},
-{w:17,d:"Aug 18",day:"Tue",ph:"Build II — Race Specific",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:17,d:"Aug 19",day:"Wed",ph:"Build II — Race Specific",s:"REST",z:"—",p:"Full rest."},
-{w:17,d:"Aug 20",day:"Thu",ph:"Build II — Race Specific",s:"Hill Repeats",z:"Z4/Z5",p:"2km warm-up + 8×90s hill Z4–5 (hard, jog down recovery) + 2km cool-down"},
-{w:17,d:"Aug 21",day:"Fri",ph:"Build II — Race Specific",s:"Tempo Intervals",z:"Z4",p:"2km warm-up + 4×8min Z4 (168–175bpm) w/ 2min jog rest + 2km cool-down"},
-{w:17,d:"Aug 22",day:"Sat",ph:"Build II — Race Specific",s:"Easy + Strides",z:"Z2",p:"9km easy Z2 + 4×20s strides"},
-{w:17,d:"Aug 23",day:"Sun",ph:"Build II — Race Specific",s:"Long Run",z:"Z2/Z3",p:"22km — mostly Z2, push final 20% into Z3"},
-{w:18,d:"Aug 24",day:"Mon",ph:"Build II — Race Specific",s:"Easy Run",z:"Z2",p:"7km easy Z2 (145–155bpm)"},
-{w:18,d:"Aug 25",day:"Tue",ph:"Build II — Race Specific",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:18,d:"Aug 26",day:"Wed",ph:"Build II — Race Specific",s:"REST",z:"—",p:"Full rest."},
-{w:18,d:"Aug 27",day:"Thu",ph:"Build II — Race Specific",s:"Hill Repeats",z:"Z4/Z5",p:"2km warm-up + 8×90s hill Z4–5 (hard, jog down recovery) + 2km cool-down"},
-{w:18,d:"Aug 28",day:"Fri",ph:"Build II — Race Specific",s:"Tempo Intervals",z:"Z4",p:"2km warm-up + 4×8min Z4 (168–175bpm) w/ 2min jog rest + 2km cool-down"},
-{w:18,d:"Aug 29",day:"Sat",ph:"Build II — Race Specific",s:"Easy + Strides",z:"Z2",p:"6km easy Z2 + 4×20s strides"},
-{w:18,d:"Aug 30",day:"Sun",ph:"Build II — Race Specific",s:"Long Run",z:"Z2/Z3",p:"15km — mostly Z2, push final 20% into Z3"},
-{w:19,d:"Aug 31",day:"Mon",ph:"Peak — High Intensity",s:"Easy Run",z:"Z2",p:"9km easy Z2 (145–155bpm)"},
-{w:19,d:"Sep 1",day:"Tue",ph:"Peak — High Intensity",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:19,d:"Sep 2",day:"Wed",ph:"Peak — High Intensity",s:"REST",z:"—",p:"Full rest."},
-{w:19,d:"Sep 3",day:"Thu",ph:"Peak — High Intensity",s:"HM Pace Work",z:"Z3/Z4",p:"2km warm-up + 3×2miles @ sub-1:18 HM goal pace (Z3/Z4) + 2km cool-down"},
-{w:19,d:"Sep 4",day:"Fri",ph:"Peak — High Intensity",s:"Tempo",z:"Z4",p:"2km warm-up + 32min Z4 tempo (168–179bpm) + 2km cool-down"},
-{w:19,d:"Sep 5",day:"Sat",ph:"Peak — High Intensity",s:"🏁 5 Peaks – Albion Hills",z:"Race",p:"RACE: 5 Peaks – Albion Hills (B-Race) — run hard but controlled, treat as a quality workout"},
-{w:19,d:"Sep 6",day:"Sun",ph:"Peak — High Intensity",s:"Long Run",z:"Z2/Z3",p:"21km — 2×3km at HM goal pace mid-run"},
-{w:20,d:"Sep 7",day:"Mon",ph:"Peak — High Intensity",s:"Easy Run",z:"Z2",p:"9km easy Z2 (145–155bpm)"},
-{w:20,d:"Sep 8",day:"Tue",ph:"Peak — High Intensity",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:20,d:"Sep 9",day:"Wed",ph:"Peak — High Intensity",s:"REST",z:"—",p:"Full rest."},
-{w:20,d:"Sep 10",day:"Thu",ph:"Peak — High Intensity",s:"HM Pace Work",z:"Z3/Z4",p:"2km warm-up + 3×2miles @ sub-1:18 HM goal pace (Z3/Z4) + 2km cool-down"},
-{w:20,d:"Sep 11",day:"Fri",ph:"Peak — High Intensity",s:"Tempo",z:"Z4",p:"2km warm-up + 32min Z4 tempo (168–179bpm) + 2km cool-down"},
-{w:20,d:"Sep 12",day:"Sat",ph:"Peak — High Intensity",s:"Shakeout",z:"Z1",p:"7km Z1 shakeout (<135bpm) — easy, loose"},
-{w:20,d:"Sep 13",day:"Sun",ph:"Peak — High Intensity",s:"Long Run",z:"Z2/Z3",p:"22km — 2×3km at HM goal pace mid-run"},
-{w:21,d:"Sep 14",day:"Mon",ph:"Peak — High Intensity",s:"Easy Run",z:"Z2",p:"10km easy Z2 (145–155bpm)"},
-{w:21,d:"Sep 15",day:"Tue",ph:"Peak — High Intensity",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:21,d:"Sep 16",day:"Wed",ph:"Peak — High Intensity",s:"REST",z:"—",p:"Full rest."},
-{w:21,d:"Sep 17",day:"Thu",ph:"Peak — High Intensity",s:"HM Pace Work",z:"Z3/Z4",p:"2km warm-up + 3×2miles @ sub-1:18 HM goal pace (Z3/Z4) + 2km cool-down"},
-{w:21,d:"Sep 18",day:"Fri",ph:"Peak — High Intensity",s:"Tempo",z:"Z4",p:"2km warm-up + 32min Z4 tempo (168–179bpm) + 2km cool-down"},
-{w:21,d:"Sep 19",day:"Sat",ph:"Peak — High Intensity",s:"Shakeout",z:"Z1",p:"7km Z1 shakeout (<135bpm) — easy, loose"},
-{w:21,d:"Sep 20",day:"Sun",ph:"Peak — High Intensity",s:"Long Run",z:"Z2/Z3",p:"23km — 2×3km at HM goal pace mid-run"},
-{w:22,d:"Sep 21",day:"Mon",ph:"Peak — High Intensity",s:"Easy Run",z:"Z2",p:"7km easy Z2 (145–155bpm)"},
-{w:22,d:"Sep 22",day:"Tue",ph:"Peak — High Intensity",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:22,d:"Sep 23",day:"Wed",ph:"Peak — High Intensity",s:"REST",z:"—",p:"Full rest."},
-{w:22,d:"Sep 24",day:"Thu",ph:"Peak — High Intensity",s:"HM Pace Work",z:"Z3/Z4",p:"2km warm-up + 3×2miles @ sub-1:18 HM goal pace (Z3/Z4) + 2km cool-down"},
-{w:22,d:"Sep 25",day:"Fri",ph:"Peak — High Intensity",s:"Tempo",z:"Z4",p:"2km warm-up + 32min Z4 tempo (168–179bpm) + 2km cool-down"},
-{w:22,d:"Sep 26",day:"Sat",ph:"Peak — High Intensity",s:"Shakeout",z:"Z1",p:"5km Z1 shakeout (<135bpm) — easy, loose"},
-{w:22,d:"Sep 27",day:"Sun",ph:"Peak — High Intensity",s:"Long Run",z:"Z2/Z3",p:"17km — 2×3km at HM goal pace mid-run"},
-{w:23,d:"Sep 28",day:"Mon",ph:"Taper I",s:"Easy Run",z:"Z2",p:"10km easy Z2 (145–155bpm)"},
-{w:23,d:"Sep 29",day:"Tue",ph:"Taper I",s:"Track Speedwork",z:"Z4/Z5",p:"Group outdoor track session — trust the coach/group. Warm up 2km Z2 before, cool down 2km Z2 after."},
-{w:23,d:"Sep 30",day:"Wed",ph:"Taper I",s:"REST",z:"—",p:"Full rest."},
-{w:23,d:"Oct 1",day:"Thu",ph:"Taper I",s:"Short Tempo",z:"Z4",p:"1.5km warm-up + 3×8min Z4 (168–175bpm) w/ 2min rest + 1.5km cool-down"},
-{w:23,d:"Oct 2",day:"Fri",ph:"Taper I",s:"Easy + Strides",z:"Z2",p:"8km easy Z2 + 4×20s strides — legs should feel snappy"},
-{w:23,d:"Oct 3",day:"Sat",ph:"Taper I",s:"🏁 5 Peaks – Heart Lake",z:"Race",p:"RACE: 5 Peaks – Heart Lake (B-Race) — run hard but controlled, treat as a quality workout"},
-{w:23,d:"Oct 4",day:"Sun",ph:"Taper I",s:"Medium Long",z:"Z2",p:"15km comfortable Z2 — no racing it"},
-{w:24,d:"Oct 5",day:"Mon",ph:"Taper I",s:"Easy Run",z:"Z2",p:"8km easy Z2 (145–155bpm)"},
-{w:24,d:"Oct 6",day:"Tue",ph:"Taper I",s:"VO2 Intervals",z:"Z5",p:"2km warm-up + 6×1000m Z5 (180–190bpm) w/ 90s rest + 2km cool-down"},
-{w:24,d:"Oct 7",day:"Wed",ph:"Taper I",s:"REST",z:"—",p:"Full rest."},
-{w:24,d:"Oct 8",day:"Thu",ph:"Taper I",s:"Short Tempo",z:"Z4",p:"1.5km warm-up + 3×8min Z4 (168–175bpm) w/ 2min rest + 1.5km cool-down"},
-{w:24,d:"Oct 9",day:"Fri",ph:"Taper I",s:"Easy + Strides",z:"Z2",p:"6km easy Z2 + 4×20s strides — legs should feel snappy"},
-{w:24,d:"Oct 10",day:"Sat",ph:"Taper I",s:"Shakeout",z:"Z1",p:"4km Z1 shakeout (<135bpm)"},
-{w:24,d:"Oct 11",day:"Sun",ph:"Taper I",s:"Medium Long",z:"Z2",p:"12km comfortable Z2 — no racing it"},
-{w:25,d:"Oct 12",day:"Mon",ph:"Taper II",s:"Easy Run",z:"Z2",p:"6km easy Z2 (145–155bpm)"},
-{w:25,d:"Oct 13",day:"Tue",ph:"Taper II",s:"VO2 Intervals",z:"Z5",p:"2km warm-up + 6×1000m Z5 (180–190bpm) w/ 90s rest + 2km cool-down"},
-{w:25,d:"Oct 14",day:"Wed",ph:"Taper II",s:"REST",z:"—",p:"Full rest."},
-{w:25,d:"Oct 15",day:"Thu",ph:"Taper II",s:"Short Tempo",z:"Z4",p:"1.5km warm-up + 3×8min Z4 (168–175bpm) w/ 2min rest + 1.5km cool-down"},
-{w:25,d:"Oct 16",day:"Fri",ph:"Taper II",s:"Easy + Strides",z:"Z2",p:"5km easy Z2 + 4×20s strides — legs should feel snappy"},
-{w:25,d:"Oct 17",day:"Sat",ph:"Taper II",s:"Shakeout",z:"Z1",p:"3km Z1 shakeout (<135bpm)"},
-{w:25,d:"Oct 18",day:"Sun",ph:"Taper II",s:"Medium Long",z:"Z2",p:"9km comfortable Z2 — no racing it"},
-{w:26,d:"Oct 19",day:"Mon",ph:"Taper II",s:"Easy Run",z:"Z2",p:"4km easy Z2 (145–155bpm)"},
-{w:26,d:"Oct 20",day:"Tue",ph:"Taper II",s:"VO2 Intervals",z:"Z5",p:"2km warm-up + 6×1000m Z5 (180–190bpm) w/ 90s rest + 2km cool-down"},
-{w:26,d:"Oct 21",day:"Wed",ph:"Taper II",s:"REST",z:"—",p:"Full rest."},
-{w:26,d:"Oct 22",day:"Thu",ph:"Taper II",s:"Short Tempo",z:"Z4",p:"1.5km warm-up + 3×8min Z4 (168–175bpm) w/ 2min rest + 1.5km cool-down"},
-{w:26,d:"Oct 23",day:"Fri",ph:"Taper II",s:"Easy + Strides",z:"Z2",p:"3km easy Z2 + 4×20s strides — legs should feel snappy"},
-{w:26,d:"Oct 24",day:"Sat",ph:"Taper II",s:"Shakeout",z:"Z1",p:"2km Z1 shakeout (<135bpm)"},
-{w:26,d:"Oct 25",day:"Sun",ph:"Taper II",s:"Medium Long",z:"Z2",p:"6km comfortable Z2 — no racing it"},
-{w:27,d:"Oct 26",day:"Mon",ph:"Race Week",s:"Easy Run",z:"Z2",p:"20min easy Z2 (145–155bpm) — wake the legs up"},
-{w:27,d:"Oct 27",day:"Tue",ph:"Race Week",s:"Easy + Strides",z:"Z2",p:"15min easy Z2 + 4×20s strides — stay loose and sharp"},
-{w:27,d:"Oct 28",day:"Wed",ph:"Race Week",s:"REST",z:"—",p:"Full rest. Check race logistics, lay out gear, hydrate."},
-{w:27,d:"Oct 29",day:"Thu",ph:"Race Week",s:"REST",z:"—",p:"Full rest. Short walk OK."},
-{w:27,d:"Oct 30",day:"Fri",ph:"Race Week",s:"Shakeout",z:"Z1",p:"10–15min Z1 shakeout (<135bpm) — completely relaxed"},
-{w:27,d:"Oct 31",day:"Sat",ph:"Race Week",s:"REST",z:"—",p:"Full rest. Early dinner, early bed. No heroics tomorrow."},
-{w:27,d:"Nov 1",day:"Sun",ph:"Race Week",s:"🏁 HALF MARATHON",z:"Race",p:"HALF MARATHON — Warm up 10–15min Z2, settle Z3 first 5km, build to Z4 through middle, leave it all in final 5km. Goal: sub-1:18, stretch: 1:15"}
-];
+var PLAN=[{w:1,d:"Apr 27",day:"Mon",ph:"Base I",s:"Easy Run",z:"Z2",p:"5km easy"},{w:1,d:"Apr 28",day:"Tue",ph:"Base I",s:"Track",z:"Z4/Z5",p:"Track session"},{w:1,d:"Apr 29",day:"Wed",ph:"Base I",s:"REST",z:"—",p:"Rest day"},{w:1,d:"Apr 30",day:"Thu",ph:"Base I",s:"Easy + Drills",z:"Z1",p:"5km + drills"},{w:1,d:"May 1",day:"Fri",ph:"Base I",s:"Aerobic Build",z:"Z2/Z3",p:"7km progressive"},{w:1,d:"May 2",day:"Sat",ph:"Base I",s:"Race",z:"Race",p:"5 Peaks Kelso"},{w:1,d:"May 3",day:"Sun",ph:"Base I",s:"Long Run",z:"Z2",p:"12km"},{w:2,d:"May 4",day:"Mon",ph:"Base I",s:"Easy Run",z:"Z2",p:"6km easy"},{w:2,d:"May 5",day:"Tue",ph:"Base I",s:"Track",z:"Z4/Z5",p:"Track session"},{w:2,d:"May 6",day:"Wed",ph:"Base I",s:"REST",z:"—",p:"Rest day"},{w:2,d:"May 7",day:"Thu",ph:"Base I",s:"Easy + Drills",z:"Z1",p:"5km + drills"},{w:2,d:"May 8",day:"Fri",ph:"Base I",s:"Aerobic Build",z:"Z2/Z3",p:"8km progressive"},{w:2,d:"May 9",day:"Sat",ph:"Base I",s:"Strides + Easy",z:"Z2",p:"6km + strides"},{w:2,d:"May 10",day:"Sun",ph:"Base I",s:"Long Run",z:"Z2",p:"13km"},{w:3,d:"May 11",day:"Mon",ph:"Base I",s:"Easy Run",z:"Z2",p:"7km easy"},{w:3,d:"May 12",day:"Tue",ph:"Base I",s:"Track",z:"Z4/Z5",p:"Track session"},{w:3,d:"May 13",day:"Wed",ph:"Base I",s:"REST",z:"—",p:"Rest day"},{w:3,d:"May 14",day:"Thu",ph:"Base I",s:"Easy + Drills",z:"Z1",p:"6km + drills"},{w:3,d:"May 15",day:"Fri",ph:"Base I",s:"Aerobic Build",z:"Z2/Z3",p:"9km progressive"},{w:3,d:"May 16",day:"Sat",ph:"Base I",s:"Strides + Easy",z:"Z2",p:"6km + strides"},{w:3,d:"May 17",day:"Sun",ph:"Base I",s:"Long Run",z:"Z2",p:"15km"},{w:4,d:"May 18",day:"Mon",ph:"Base I",s:"Easy Run",z:"Z2",p:"5km easy"},{w:4,d:"May 19",day:"Tue",ph:"Base I",s:"Track",z:"Z4/Z5",p:"Track session"},{w:4,d:"May 20",day:"Wed",ph:"Base I",s:"REST",z:"—",p:"Rest day"},{w:4,d:"May 21",day:"Thu",ph:"Base I",s:"Easy + Drills",z:"Z1",p:"4km + drills"},{w:4,d:"May 22",day:"Fri",ph:"Base I",s:"Aerobic Build",z:"Z2/Z3",p:"6km progressive"},{w:4,d:"May 23",day:"Sat",ph:"Base I",s:"Race",z:"Race",p:"Sulphur Springs 20k"},{w:4,d:"May 24",day:"Sun",ph:"Base I",s:"Long Run",z:"Z2",p:"11km"}];
 
-const SEED={"Apr 28":{km:7,mins:40,hr:156,legs:2,aero:2,notes:"Meh",done:true},"May 1":{km:7,mins:35,hr:148,done:true},"May 2":{km:21.5,mins:105,hr:180,legs:5,aero:4,notes:"Very strong",done:true},"May 3":{done:true},"May 4":{km:7.4,mins:45,hr:143,legs:3,aero:3,notes:"Ok",done:true},"May 5":{km:8.5,mins:50,hr:160,legs:3,aero:3,notes:"Decent",done:true},"May 7":{km:5,mins:30,hr:138,notes:"Bored",done:true},"May 10":{km:18,mins:90,hr:152,legs:4,aero:4,notes:"Solid",done:true},"May 11":{km:6.4,mins:33,hr:148,legs:3,aero:3,notes:"Decent",done:true},"May 12":{km:9,hr:156,done:true},"May 14":{km:7.3,mins:40,hr:143,done:true},"May 16":{km:10,mins:55,hr:149,done:true}};
+var SEED={"Apr 28":{km:7,mins:40,hr:156,done:true},"May 1":{km:7,mins:35,hr:148,done:true},"May 2":{km:21.5,mins:105,hr:180,done:true},"May 3":{done:true},"May 4":{km:7.4,mins:45,hr:143,done:true},"May 5":{km:8.5,mins:50,hr:160,done:true},"May 7":{km:5,mins:30,hr:138,done:true},"May 10":{km:18,mins:90,hr:152,done:true},"May 11":{km:6.4,mins:33,hr:148,done:true},"May 12":{km:9,hr:156,done:true},"May 14":{km:7.3,mins:40,hr:143,done:true},"May 16":{km:10,mins:55,hr:149,done:true}};
 
-const ZBG={Z1:"#082f49",Z2:"#052e16","Z2/Z3":"#052e16",Z3:"#292524","Z3/Z4":"#292524",Z4:"#292524","Z4/Z5":"#450a0a",Z5:"#450a0a",Race:"#2e1065","—":"#1e293b"};
-const ZC={Z1:"#93c5fd",Z2:"#4ade80","Z2/Z3":"#86efac",Z3:"#fbbf24","Z3/Z4":"#fdba74",Z4:"#fb923c","Z4/Z5":"#fca5a5",Z5:"#f87171",Race:"#c4b5fd","—":"#64748b"};
-const PC={"Base I — Aerobic Foundation":"#4ade80","Base II — Volume Build":"#4ade80","Build I — Strength & Tempo":"#fbbf24","Build II — Race Specific":"#fb923c","Peak — High Intensity":"#f87171","Taper I":"#93c5fd","Taper II":"#60a5fa","Race Week":"#fbbf24"};
+var ZC={Z1:"#93c5fd",Z2:"#4ade80","Z2/Z3":"#86efac",Z3:"#fbbf24","Z3/Z4":"#fdba74",Z4:"#fb923c","Z4/Z5":"#fca5a5",Z5:"#f87171",Race:"#c4b5fd","—":"#64748b"};
 
-// State
-let S={tab:"today",logs:{...SEED},exp:null,form:{},vw:null,saved:false,_t:null,strava:{connected:false,token:null,athlete:null,syncing:false}};
-const KEY="tw-hm-v1";
-const STRAVA_KEY="tw-hm-strava";
-(()=>{
-  try{
-    const d=localStorage.getItem(KEY);
-    if(d)S.logs={...SEED,...JSON.parse(d)};
-  }catch(e){}
-  try{
-    const st=localStorage.getItem(STRAVA_KEY);
-    if(st){
-      const parsed=JSON.parse(st);
-      S.strava={...S.strava,...parsed};
-    }
-  }catch(e){}
-})();
+var STRAVA_CLIENT_ID="246912";
+var STRAVA_REDIRECT_URI="https://incandescent-raindrop-cc5fff.netlify.app/.netlify/functions/strava-callback";
 
-// ─── STRAVA OAUTH ────────────────────────────────────────────────────────────
-const STRAVA_CLIENT_ID="246912";
-const STRAVA_REDIRECT_URI="https://incandescent-raindrop-cc5fff.netlify.app/.netlify/functions/strava-callback";
+var S={tab:"today",logs:Object.assign({},SEED),exp:null,form:{},saved:false,_t:null,strava:{connected:false,token:null,athlete:null}};
+var KEY="tw-hm-v1";
+var STRAVA_KEY="tw-hm-strava";
 
-function stravaAuthUrl(){
-  const scope="read";
-  return `https://www.strava.com/oauth/authorize?client_id=${STRAVA_CLIENT_ID}&redirect_uri=${encodeURIComponent(STRAVA_REDIRECT_URI)}&response_type=code&scope=${scope}`;
-}
+(function(){try{var d=localStorage.getItem(KEY);if(d)S.logs=Object.assign({},SEED,JSON.parse(d));}catch(e){}try{var st=localStorage.getItem(STRAVA_KEY);if(st){var parsed=JSON.parse(st);S.strava=Object.assign({},S.strava,parsed);}}catch(e){}})();
 
-function saveStravaAuth(){
-  try{
-    localStorage.setItem(STRAVA_KEY,JSON.stringify({connected:S.strava.connected,token:S.strava.token,athlete:S.strava.athlete}));
-  }catch(e){}
-}
+function stravaAuthUrl(){var scope="read";return "https://www.strava.com/oauth/authorize?client_id="+STRAVA_CLIENT_ID+"&redirect_uri="+encodeURIComponent(STRAVA_REDIRECT_URI)+"&response_type=code&scope="+scope;}
 
-function disconnectStrava(){
-  S.strava={connected:false,token:null,athlete:null,syncing:false};
-  localStorage.removeItem(STRAVA_KEY);
-  render();
-}
+function saveStravaAuth(){try{localStorage.setItem(STRAVA_KEY,JSON.stringify({connected:S.strava.connected,token:S.strava.token,athlete:S.strava.athlete}));}catch(e){}}
 
-async function fetchStravaActivities(){
-  if(!S.strava.token){console.log("No token");return;}
-  S.strava.syncing=true;
-  render();
-  try{
-    const res=await fetch("https://www.strava.com/api/v3/athlete/activities?per_page=200",{
-      headers:{Authorization:`Bearer ${S.strava.token}`}
-    });
-    if(!res.ok){
-      if(res.status===401){
-        disconnectStrava();
-      }
-      return;
-    }
-    const activities=await res.json();
-    autoMatchActivities(activities);
-  }catch(e){
-    console.error("Strava fetch error:",e);
-  }finally{
-    S.strava.syncing=false;
-    render();
-  }
-}
+function handleOAuthCallback(){var params=new URLSearchParams(window.location.search);var token=params.get("strava_token");var athleteName=params.get("athlete_name");var athleteId=params.get("athlete_id");if(!token)return;window.history.replaceState({},"","/");S.strava.token=token;S.strava.connected=true;S.strava.athlete={name:athleteName,id:athleteId};saveStravaAuth();fetchStravaActivities();render();}
 
-function autoMatchActivities(activities){
-  activities.forEach(act=>{
-    if(act.type!=="Run")return;
-    const d=new Date(act.start_date);
-    const dateStr=d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
-    const existing=S.logs[dateStr];
-    if(existing&&existing.done)return;
-    const distKM=Math.round((act.distance/1000)*10)/10;
-    const mins=Math.round(act.moving_time/60);
-    const pace=mins>0?Math.round((mins/distKM)*10)/10:null;
-    S.logs[dateStr]={
-      ...existing,
-      km:distKM,
-      mins:mins,
-      hr:act.average_heartrate?Math.round(act.average_heartrate):null,
-      pace:pace,
-      elev:act.total_elevation_gain?Math.round(act.total_elevation_gain):null,
-      done:true,
-      _strava:true
-    };
-  });
-  save();
-}
+function fetchStravaActivities(){if(!S.strava.token)return;fetch("https://www.strava.com/api/v3/athlete/activities?per_page=200",{headers:{Authorization:"Bearer "+S.strava.token}}).then(function(res){if(!res.ok)throw new Error("Strava error");return res.json();}).then(function(activities){autoMatchActivities(activities);}).catch(function(e){console.error("Strava error:",e);});}
 
-async function handleOAuthCallback(){
-  const params=new URLSearchParams(window.location.search);
-  const token=params.get("strava_token");
-  const athleteName=params.get("athlete_name");
-  const athleteId=params.get("athlete_id");
-  const error=params.get("error");
+function autoMatchActivities(activities){activities.forEach(function(act){if(act.type!=="Run")return;var d=new Date(act.start_date);var dateStr=d.toLocaleDateString("en-US",{month:"short",day:"numeric"});var existing=S.logs[dateStr];if(existing&&existing.done)return;var distKM=Math.round((act.distance/1000)*10)/10;var mins=Math.round(act.moving_time/60);var pace=mins>0?Math.round((mins/distKM)*10)/10:null;S.logs[dateStr]={km:distKM,mins:mins,hr:act.average_heartrate?Math.round(act.average_heartrate):null,pace:pace,elev:act.total_elevation_gain?Math.round(act.total_elevation_gain):null,done:true,_strava:true};});save();}
 
-  if(error){
-    console.error("Strava error:",error);
-    window.history.replaceState({},"","/");
-    return;
-  }
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S.logs));}catch(e){}S.saved=true;clearTimeout(S._t);S._t=setTimeout(function(){S.saved=false;render();},1800);}
 
-  if(!token)return;
-
-  window.history.replaceState({},"","/");
-  S.strava.token=token;
-  S.strava.connected=true;
-  S.strava.athlete={name:athleteName,id:athleteId};
-  saveStravaAuth();
-  await fetchStravaActivities();
-  render();
-}
-
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S.logs));}catch(e){}S.saved=true;clearTimeout(S._t);S._t=setTimeout(()=>{S.saved=false;render();},1800);}
 function todayStr(){return new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"});}
-function daysLeft(){const r=new Date("2026-11-01"),n=new Date();n.setHours(0,0,0,0);return Math.max(0,Math.round((r-n)/86400000));}
-function bw(){const b={};PLAN.forEach(x=>{if(!b[x.w])b[x.w]=[];b[x.w].push(x);});return b;}
-function cw(){const t=todayStr(),x=PLAN.find(p=>p.d===t);return x?x.w:3;}
-function ml(x){return{...x,...(S.logs[x.d]||{})};}
-function zp(z){return`<span class="zone-pill" style="background:${ZBG[z]||ZBG["—"]};color:${ZC[z]||ZC["—"]}">${z}</span>`;}
 
-function openForm(date){
-  if(S.exp===date){S.exp=null;render();return;}
-  const ex=S.logs[date]||{};
-  S.form={km:ex.km??'',mins:ex.mins??'',hr:ex.hr??'',legs:ex.legs||0,aero:ex.aero||0,notes:ex.notes||'',done:ex.done||false};
-  S.exp=date;render();
-}
-function saveEntry(date){
-  S.logs[date]={km:S.form.km!==''?parseFloat(S.form.km):null,mins:S.form.mins!==''?parseFloat(S.form.mins):null,hr:S.form.hr!==''?parseFloat(S.form.hr):null,legs:S.form.legs||null,aero:S.form.aero||null,notes:S.form.notes||'',done:S.form.done};
-  S.exp=null;save();render();
-}
+function daysLeft(){var r=new Date("2026-11-01"),n=new Date();n.setHours(0,0,0,0);return Math.max(0,Math.round((r-n)/86400000));}
 
-function cardHtml(x,showDay,isToday){
-  const m=ml(x),isExp=S.exp===x.d,isRest=x.s==="REST",isDone=m.done;
-  let top='';
-  if(showDay||isToday) top=`<div style="display:flex;gap:8px;margin-bottom:4px">${showDay?`<span style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">${x.day} ${x.d.split(" ")[1]}</span>`:''}${isToday?`<span style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.08em">today</span>`:''}</div>`;
-  let meta='';
-  if(isDone&&!isExp&&(m.km||m.mins||m.hr)) meta=`<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">${m.km?`<span style="font-size:12px;font-weight:600;color:var(--green)">${m.km} km</span>`:''}${m.mins?`<span style="font-size:12px;color:var(--muted)">${m.mins} min</span>`:''}${m.hr?`<span style="font-size:12px;color:var(--amber)">♥ ${m.hr}</span>`:''}${m.pace?`<span style="font-size:12px;color:var(--blue)">${m.pace} min/km</span>`:''}${m.elev?`<span style="font-size:12px;color:var(--amber)">${m.elev}m ↑</span>`:''}${m.legs?`<span style="font-size:12px;color:var(--muted)">legs ${m.legs}/5</span>`:''}${m.aero?`<span style="font-size:12px;color:var(--muted)">aero ${m.aero}/5</span>`:''}${m.notes?`<span style="font-size:12px;color:var(--muted);font-style:italic">"${m.notes.slice(0,28)}${m.notes.length>28?'...':''}"</span>`:''}${m._strava?`<span class="strava-badge">Strava</span>`:''}`;
-  let form='';
-  if(isExp){
-    const f=S.form;
-    const stars=(field,label,cls)=>`<div style="margin-bottom:12px"><div class="metric-label" style="margin-bottom:6px">${label}</div><div class="stars">${[1,2,3,4,5].map(n=>`<button class="star ${n<=(f[field]||0)?cls:''}" onclick="S.form['${field}']=${n===(f[field]||0)?0:n};render()">${n}</button>`).join('')}</div></div>`;
-    form=`<div class="card-form"><div class="metric-grid">${[["km","KM","decimal"],["mins","Mins","numeric"],["hr","Avg HR","numeric"]].map(([k,l,im])=>`<div><label class="metric-label">${l}</label><input type="number" inputmode="${im}" value="${f[k]??''}" placeholder="0" oninput="S.form['${k}']=this.value" style="font-size:18px"></div>`).join('')}</div>${stars("legs","Leg freshness (1=dead, 5=springy)","on-b")}${stars("aero","Aerobic feel (1=gasping, 5=effortless)","on-g")}<textarea rows="2" placeholder="How did it feel?" oninput="S.form.notes=this.value" style="margin-bottom:10px">${f.notes||''}</textarea><div style="display:flex;align-items:center;gap:10px"><label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;flex:1"><input type="checkbox" ${f.done?'checked':''} onchange="S.form.done=this.checked" style="width:16px;height:16px;accent-color:var(--green)"> Mark done</label><button class="btn-ghost" onclick="S.exp=null;render()">Cancel</button><button class="btn-save" onclick="saveEntry('${x.d}')">Save ✓</button></div></div>`;
-  }
-  return `<div class="card${isToday?' hl':''}"><div class="${isRest?'card-head rest':'card-head'}" ${!isRest?`onclick="openForm('${x.d}')"`:''}>${top}<div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:15px;font-weight:500;color:${x.z==='Race'?'#c4b5fd':'var(--text)'}">${x.s}</span>${isDone?'<span style="color:var(--green);font-size:14px">✓</span>':''}</div></div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:8px">${!isRest?zp(x.z):''}${!isRest?`<span style="font-size:12px;color:var(--muted)">${isExp?'▲':'▼'}</span>`:''}</div></div>${!isRest?`<p style="margin:6px 0 0;font-size:13px;color:var(--muted);line-height:1.4">${x.p}</p>`:``}${meta}</div>${form}</div>`;
-}
+function openForm(date){if(S.exp===date){S.exp=null;render();return;}var ex=S.logs[date]||{};S.form={km:ex.km||"",mins:ex.mins||"",hr:ex.hr||"",done:ex.done||false};S.exp=date;render();}
 
-function todayView(){
-  const t=todayStr(),x=PLAN.find(p=>p.d===t);
-  if(!x) return`<div style="padding:40px 20px;text-align:center;color:var(--muted)"><div style="font-size:40px">🗓️</div><p style="margin-top:12px">Today (${t}) is outside the plan<br><small>Apr 27 – Nov 1, 2026</small></p></div>`;
-  const B=bw(),CW=cw(),upcoming=(B[CW]||[]).filter(p=>p.d!==t&&!S.logs[p.d]?.done&&p.s!=='REST').slice(0,3);
-  const stravaStatus=S.strava.connected?`<div class="strava-status connected"><div class="strava-dot"></div>Connected to Strava${S.strava.athlete?.name?` (${S.strava.athlete.name})`:''}</div>`:S.strava.syncing?`<div class="strava-status"><div class="strava-dot" style="background:var(--amber);animation:pulse 1.5s infinite"></div>Syncing with Strava...</div>`:`;
-  return`<div class="phase-banner"><div><div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Week ${x.w} of 27</div><div style="font-size:13px;font-weight:500;color:${PC[x.ph]||'var(--text)'}">${x.ph}</div></div><div style="text-align:right"><div style="font-size:28px;font-weight:600;line-height:1">${daysLeft()}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">days to go</div></div></div><div style="padding:14px 16px">${stravaStatus}<div class="section-label">Today</div>${cardHtml(x,false,true)}${upcoming.length?`<div class="section-label" style="margin-top:14px">Also this week</div>${upcoming.map(p=>cardHtml(p,true,false)).join('')}`:''}</div>`;
-}
+function saveEntry(date){S.logs[date]={km:S.form.km!==""?parseFloat(S.form.km):null,mins:S.form.mins!==""?parseFloat(S.form.mins):null,hr:S.form.hr!==""?parseFloat(S.form.hr):null,done:S.form.done};S.exp=null;save();render();}
 
-function weekView(){
-  const B=bw(),aw=S.vw??cw(),CW=cw(),t=todayStr(),ws=B[aw]||[],ph=ws.find(p=>p.ph)?.ph||'';
-  const runs=ws.filter(p=>S.logs[p.d]?.done&&p.s!=='REST'),km=runs.reduce((s,p)=>s+(S.logs[p.d]?.km||0),0);
-  return`<div class="week-nav"><button class="nav-btn" onclick="S.vw=Math.max(1,(S.vw??${CW})-1);render()" ${aw<=1?'disabled':''}>◀</button><div style="flex:1;text-align:center"><div style="font-size:15px;font-weight:500">Week ${aw}${aw===CW?' · now':''}</div><div style="font-size:12px;font-weight:500;color:${PC[ph]||'var(--muted)'}">${ph}</div></div><button class="nav-btn" onclick="S.vw=Math.min(27,(S.vw??${CW})+1);render()" ${aw>=27?'disabled':''}>▶</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 16px"><div class="stat-card"><div style="font-size:22px;font-weight:600;color:var(--green)">${km.toFixed(1)}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px">km logged</div></div><div class="stat-card"><div style="font-size:22px;font-weight:600">${runs.length}/${ws.filter(p=>p.s!=='REST').length}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px">sessions done</div></div></div><div style="padding:0 16px 16px">${ws.map(p=>cardHtml(p,true,p.d===t)).join('')}</div>`;
-}
+function zp(z){return '<span style="display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:'+ZC[z]+';color:#0f172a">'+z+'</span>';}
 
-function logView(){
-  const B=bw(),CW=cw(),t=todayStr();
-  return`<div style="padding:12px 16px">${Object.keys(B).map(Number).sort((a,b)=>a-b).map(wk=>{
-    const ws=B[wk],isCurr=wk===CW,isPast=wk<CW,runs=ws.filter(p=>S.logs[p.d]?.done&&p.s!=='REST'),km=runs.reduce((s,p)=>s+(S.logs[p.d]?.km||0),0);
-    return`<div style="margin-bottom:${isCurr?16:10}px"><div style="display:flex;align-items:center;gap:8px;padding:6px 0;cursor:${!isCurr?'pointer':'default'}" ${!isCurr?`onclick="S.vw=${wk};S.tab='week';render()"`:''}}><div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${isCurr?'var(--green)':isPast?'#374151':'#1e293b'}"></div><span style="font-size:12px;font-weight:600;color:${isCurr?'var(--text)':'var(--muted)'};text-transform:uppercase;letter-spacing:.08em">Wk ${wk} · ${ws[0]?.d}${isCurr?' · now':''}</span>${km>0?`<span style="margin-left:auto;font-size:12px;font-weight:600;color:var(--green)">${km.toFixed(1)} km</span>`:'<span style="margin-left:auto"></span>'}<span style="font-size:11px;color:var(--muted)">${runs.length}/${ws.filter(p=>p.s!=='REST').length}</span></div>${isCurr?ws.map(p=>cardHtml(p,true,p.d===t)).join(''):''}${isPast&&runs.length?runs.map(p=>cardHtml(p,true,false)).join(''):''}${isPast&&!runs.length?`<div style="font-size:12px;color:var(--muted);padding-left:16px;font-style:italic">No runs logged</div>`:''}${!isCurr&&!isPast?`<div style="font-size:12px;color:var(--muted);padding-left:16px">${ws.filter(p=>p.s!=='REST').map(p=>p.s).join(' · ').slice(0,70)}</div>`:''}</div>`;
-  }).join('')}</div>`;
-}
+function cardHtml(x,showDay,isToday){var m=S.logs[x.d]||{},isExp=S.exp===x.d,isRest=x.s==="REST",isDone=m.done;var top="";if(showDay||isToday){top='<div style="display:flex;gap:8px;margin-bottom:4px">'+(showDay?'<span style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase">'+x.day+" "+x.d.split(" ")[1]+'</span>':"")+(isToday?'<span style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase">today</span>':"")+"</div>";}var meta="";if(isDone&&!isExp&&m.km){meta='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">'+(m.km?'<span style="font-size:12px;font-weight:600;color:var(--green)">'+m.km+" km</span>":"")+(m.mins?'<span style="font-size:12px;color:var(--muted)">'+m.mins+" min</span>":"")+(m.hr?'<span style="font-size:12px;color:var(--amber)">♥ '+m.hr+"</span>":"")+(m.pace?'<span style="font-size:12px;color:var(--blue)">'+m.pace+" min/km</span>":"")+(m.elev?'<span style="font-size:12px;color:var(--amber)">'+m.elev+"m ↑</span>":"")+(m._strava?'<span class="strava-badge">Strava</span>':"")+"</div>";}var form="";if(isExp){var f=S.form;form='<div class="card-form"><div class="metric-grid"><div><label class="metric-label">KM</label><input type="number" value="'+(f.km||"")+'" placeholder="0" oninput="S.form.km=this.value" style="font-size:18px"></div><div><label class="metric-label">Mins</label><input type="number" value="'+(f.mins||"")+'" placeholder="0" oninput="S.form.mins=this.value" style="font-size:18px"></div><div><label class="metric-label">HR</label><input type="number" value="'+(f.hr||"")+'" placeholder="0" oninput="S.form.hr=this.value" style="font-size:18px"></div></div><label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;margin-bottom:10px"><input type="checkbox" '+(f.done?"checked":"")+' onchange="S.form.done=this.checked" style="width:16px;height:16px"> Mark done</label><div style="display:flex;gap:10px"><button class="btn-ghost" onclick="S.exp=null;render()">Cancel</button><button class="btn-save" onclick="saveEntry(\''+x.d+'\')">Save ✓</button></div></div>';}return'<div class="card'+(isToday?" hl":"")+'"><div class="'+(isRest?"card-head rest":"card-head")+'"'+(!isRest?' onclick="openForm(\''+x.d+'\')"':"")+">"+top+'<div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="flex:1"><div style="font-size:15px;font-weight:500">'+x.s+"</div></div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0">"+(!isRest?zp(x.z):"")+"</div></div>"+(!isRest?'<p style="margin:6px 0 0;font-size:13px;color:var(--muted)">'+x.p+"</p>":"")+meta+"</div>"+form+"</div>";}
 
-function statsView(){
-  const B=bw(),CW=cw(),allDone=PLAN.filter(p=>S.logs[p.d]?.done&&p.s!=='REST'),totalKM=allDone.reduce((s,p)=>s+(S.logs[p.d]?.km||0),0);
-  const chartWks=Object.keys(B).map(Number).filter(wk=>wk<=CW).map(wk=>{const km=B[wk].filter(p=>S.logs[p.d]?.done&&p.s!=='REST').reduce((s,p)=>s+(S.logs[p.d]?.km||0),0);return{wk,km};});
-  const maxKM=Math.max(...chartWks.map(d=>d.km),1);
-  const races=PLAN.filter(p=>p.z==='Race');
-  return`<div style="padding:16px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">${[["Total KM",totalKM.toFixed(1),"var(--green)"],["Sessions",allDone.length,"var(--text)"],["Days to go",daysLeft(),"var(--amber)"],["Week",`${CW}/27`,"var(--blue)"]].map(([l,v,c])=>`<div class="stat-card"><div style="font-size:24px;font-weight:600;color:${c};line-height:1">${v}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px">${l}</div></div>`).join('')}</div>${chartWks.some(d=>d.km>0)?`<div class="info-block"><div class="section-label">Weekly KM</div><div class="bar-chart">${chartWks.map(({wk,km})=>`<div class="bar-col"><div class="bar${wk===CW?' cur':''}" style="height:${km>0?Math.max(4,Math.round((km/maxKM)*62)):0}px"></div><div class="bar-lbl">${wk}</div></div>`).join('')}</div></div>`:''}
-  <div class="info-block"><div class="section-label">Races</div>${races.map(p=>{const l=S.logs[p.d];return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;opacity:${l?.done?'0.6':'1'}"><div><div style="font-size:13px;font-weight:500">${p.s.replace('🏁 ','')}</div><div style="font-size:11px;color:var(--muted)">${p.d} · Wk ${p.w}</div></div>${l?.done?`<span style="font-size:12px;font-weight:600;color:var(--green)">${l.km?l.km+' km':''} ✓</span>`:`<span style="font-size:11px;background:${ZBG.Race};color:${ZC.Race};padding:2px 8px;border-radius:20px">upcoming</span>`}</div>`;}).join('')}</div>
-  <div class="info-block"><div class="section-label">HR zone guide</div>${[["Z1","Recovery","< 135 bpm"],["Z2","Easy / base","145–155 bpm"],["Z3","Aerobic","156–167 bpm"],["Z4","Tempo / LT","168–179 bpm"],["Z5","VO2max","180–195 bpm"]].map(([z,n,r])=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">${zp(z)}<span style="font-size:13px;font-weight:500;flex:1">${n}</span><span style="font-size:12px;color:var(--muted)">${r}</span></div>`).join('')}</div>
-  </div>`;
-}
+function todayView(){var t=todayStr(),x=PLAN.find(function(p){return p.d===t;});if(!x)return'<div style="padding:40px 20px;text-align:center;color:var(--muted)"><div style="font-size:40px">🗓️</div><p style="margin-top:12px">Today is outside the plan</p></div>';var upcoming=PLAN.filter(function(p){return p.d!==t&&!S.logs[p.d]&&p.s!=="REST";}).slice(0,3);return'<div class="phase-banner"><div><div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase">Week '+x.w+'</div><div style="font-size:13px;font-weight:500">'+x.ph+'</div></div><div style="text-align:right"><div style="font-size:28px;font-weight:600;line-height:1">'+daysLeft()+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase">days to go</div></div></div><div style="padding:14px 16px">'+(S.strava.connected?'<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-radius:8px;margin-bottom:10px;font-size:12px;border:1px solid var(--green)"><div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>Connected to Strava'+(S.strava.athlete&&S.strava.athlete.name?" ("+S.strava.athlete.name+")":"")+'</div>':"")+' <div class="section-label">Today</div>'+cardHtml(x,false,true)+(upcoming.length?'<div class="section-label" style="margin-top:14px">This week</div>'+upcoming.map(function(p){return cardHtml(p,true,false);}).join(""):"")+'</div>';}
 
-const TABS=[["today","🏃","Today"],["week","📅","Week"],["log","📋","Log"],["stats","📊","Stats"]];
+function logView(){var html='<div style="padding:16px"><div class="section-label">Logged runs</div>';PLAN.forEach(function(p){var log=S.logs[p.d];if(log&&log.done){html+=cardHtml(p,true,false);}});html+="</div>";return html;}
 
-function render(){
-  const content=S.tab==='today'?todayView():S.tab==='week'?weekView():S.tab==='log'?logView():statsView();
-  const stravaBtn=S.strava.connected?`<button class="btn-disconnect" onclick="disconnectStrava()">Disconnect Strava</button>`:S.strava.syncing?`<button class="btn-strava" disabled>Syncing...</button>`:`<button class="btn-strava" onclick="window.location.href='${stravaAuthUrl()}'">Connect Strava</button>`;
-  document.getElementById('app').innerHTML=`
-    <div class="sticky">
-      <div style="padding:10px 16px 8px;display:flex;justify-content:space-between;align-items:center">
-        <div><div style="font-size:14px;font-weight:500">Half Marathon Plan</div><div style="font-size:11px;color:var(--muted)">Goal: sub-1:18 · Nov 1, 2026</div></div>
-        <div style="display:flex;gap:6px;align-items:center">${stravaBtn}${S.saved?'<span style="font-size:12px;color:var(--green);font-weight:600">Saved ✓</span>':''}</div>
-      </div>
-      <div class="tab-bar">${TABS.map(([id,ic,lb])=>`<button class="tab-btn${S.tab===id?' on':''}" onclick="S.tab='${id}';render()"><span class="ic">${ic}</span><span>${lb}</span></button>`).join('')}</div>
-    </div>
-    <div class="content">${content}</div>`;
-}
-try{
-  handleOAuthCallback();
-  render();
-}catch(e){
-  document.getElementById('app').innerHTML='<div style="padding:40px 20px;text-align:center;color:#f87171"><div style="font-size:32px">⚠️</div><p style="margin-top:12px;font-size:14px">Error: '+e.message+'</p></div>';
-}
+function statsView(){var allDone=PLAN.filter(function(p){return S.logs[p.d]&&S.logs[p.d].done;});var totalKM=allDone.reduce(function(s,p){return s+(S.logs[p.d].km||0);},0);return'<div style="padding:16px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"><div class="stat-card"><div style="font-size:24px;font-weight:600;color:var(--green)">'+totalKM.toFixed(1)+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:4px">Total KM</div></div><div class="stat-card"><div style="font-size:24px;font-weight:600">'+allDone.length+'</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:4px">Sessions</div></div></div><div class="info-block"><div class="section-label">HR Zones</div><div style="font-size:12px"><p style="margin-bottom:8px"><strong>Z1:</strong> Recovery &lt;135 bpm</p><p style="margin-bottom:8px"><strong>Z2:</strong> Easy 145-155 bpm</p><p style="margin-bottom:8px"><strong>Z3:</strong> Aerobic 156-167 bpm</p><p style="margin-bottom:8px"><strong>Z4:</strong> Tempo 168-179 bpm</p><p><strong>Z5:</strong> VO2 180+ bpm</p></div></div></div>';}
+
+var TABS=[["today","🏃","Today"],["log","📋","Log"],["stats","📊","Stats"]];
+
+function render(){var content=S.tab==="today"?todayView():S.tab==="log"?logView():statsView();var stravaBtn=S.strava.connected?'<button class="btn-strava" onclick="S.strava={connected:false,token:null,athlete:null};localStorage.removeItem(\''+STRAVA_KEY+'\');render()">Disconnect</button>':' <button class="btn-strava" onclick="window.location.href=\''+stravaAuthUrl()+'\'">Connect Strava</button>';document.getElementById("app").innerHTML='<div class="sticky"><div style="padding:10px 16px 8px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:14px;font-weight:500">Half Marathon Plan</div><div style="font-size:11px;color:var(--muted)">Goal: sub-1:18 · Nov 1, 2026</div></div><div style="display:flex;gap:6px;align-items:center">'+stravaBtn+(S.saved?'<span style="font-size:12px;color:var(--green);font-weight:600">Saved ✓</span>':"")+' </div></div><div class="tab-bar">'+TABS.map(function(t){return'<button class="tab-btn'+(S.tab===t[0]?" on":"")+'" onclick="S.tab=\''+t[0]+'\';render()"><span style="font-size:20px">'+t[1]+'</span><span>'+t[2]+"</span></button>";}).join("")+"</div></div><div class=\"content\">"+content+"</div>";}
+
+handleOAuthCallback();
+render();
 </script>
 </body>
 </html>
