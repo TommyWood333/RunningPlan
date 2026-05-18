@@ -47,8 +47,7 @@
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
-  import { getAuth } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
   const firebaseConfig = {
     apiKey: "AIzaSyBjHTfqA9QzveQIxAgHQpAGr80DuvXx6OE",
     authDomain: "runningcoachingapp.firebaseapp.com",
@@ -61,6 +60,9 @@
   const app = initializeApp(firebaseConfig);
   window.db = getFirestore(app);
   window.auth = getAuth(app);
+  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+  window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+  window.signOut = signOut;
 </script>
 </head>
 <body>
@@ -306,7 +308,7 @@ function handleSignup() {
   const password = document.getElementById('signupPassword')?.value;
   if (!email || !password) { alert('Email and password required'); return; }
   
-  window.auth.createUserWithEmailAndPassword(email, password)
+  window.createUserWithEmailAndPassword(window.auth, email, password)
     .then(cred => {
       S.user = cred.user;
       save();
@@ -321,7 +323,7 @@ function handleSignin() {
   const password = document.getElementById('signinPassword')?.value;
   if (!email || !password) { alert('Email and password required'); return; }
   
-  window.auth.signInWithEmailAndPassword(email, password)
+  window.signInWithEmailAndPassword(window.auth, email, password)
     .then(cred => {
       S.user = cred.user;
       save();
@@ -331,7 +333,7 @@ function handleSignin() {
 }
 
 function handleSignout() {
-  window.auth.signOut().then(() => {
+  window.signOut().then(() => {
     S.user = null;
     S.logs = {...SEED};
     render();
