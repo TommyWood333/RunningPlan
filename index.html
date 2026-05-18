@@ -44,6 +44,24 @@
     .race-name { font-size: 13px; font-weight: 500; }
     .race-date { font-size: 10px; color: var(--muted); }
   </style>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBjHTfqA9QzveQIxAgHQpAGr80DuvXx6OE",
+    authDomain: "runningcoachingapp.firebaseapp.com",
+    projectId: "runningcoachingapp",
+    storageBucket: "runningcoachingapp.firebasestorage.app",
+    messagingSenderId: "602546265607",
+    appId: "1:602546265607:web:cbfa782fc9c9479001d4a2"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  window.db = getFirestore(app);
+  window.auth = getAuth(app);
+</script>
 </head>
 <body>
   <div id="app"></div>
