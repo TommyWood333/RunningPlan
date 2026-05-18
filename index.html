@@ -310,7 +310,32 @@
       S.strava.connected = true;
       S.strava.athlete = {name: athleteName, id: athleteId};
       saveStravaAuth();
+      syncStrava();
       render();
+    }
+
+    function syncStrava() {
+      if (!S.strava.token) return;
+      const MAY_1_2026 = 1746086400;
+      fetch('https://www.strava.com/api/v3/athlete/activities?after=' + MAY_1_2026 + '&per_page=200', {
+        headers: {'Authorization': 'Bearer ' + S.strava.token}
+      })
+      .then(r => r.json())
+      .then(acts => {
+        acts.filter(a => a.type === 'Run').forEach(a => {
+          const d = new Date(a.start_date);
+          const dateStr = d.toLocaleDateString("en-US", {month:"short", day:"numeric"});
+          const km = (a.distance / 1000).toFixed(1);
+          const mins = Math.round(a.moving_time / 60);
+          const hr = a.average_heartrate ? Math.round(a.average_heartrate) : null;
+          if (!S.logs[dateStr] || !S.logs[dateStr].done) {
+            S.logs[dateStr] = {km: parseFloat(km), mins: mins, hr: hr, done: true};
+          }
+        });
+        save();
+        render();
+      })
+      .catch(e => console.log('Strava sync error:', e));
     }
 
     function save() {
@@ -413,7 +438,7 @@
       const cw = x.w;
       return '<div class="phase-banner"><div><div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase">Week ' + x.w + '</div><div style="font-size:13px;font-weight:500">' + x.ph + '</div></div><div style="text-align:right"><div style="font-size:28px;font-weight:600">' + daysLeft() + '</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase">days to go</div></div></div>' +
         '<div style="padding:14px 16px">' +
-        (S.strava.connected ? '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-radius:8px;margin-bottom:10px;font-size:12px;border:1px solid var(--green)"><div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>Strava connected' + (S.strava.athlete?.name ? ' (' + S.strava.athlete.name + ')' : '') + '</div>' :
+        (S.strava.connected ? '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-radius:8px;margin-bottom:10px;font-size:12px;border:1px solid var(--green)"><div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>Strava connected' + (S.strava.athlete?.name ? ' (' + S.strava.athlete.name + ')' : '') + '<button class="btn-ghost" style="margin-left:auto;font-size:11px;padding:4px 8px" onclick="syncStrava();event.stopPropagation()">Sync</button></div>' :
           '<button class="btn-strava" onclick="window.location.href=\'' + stravaAuthUrl() + '\'">Connect Strava</button>') +
         '<div class="section-label">Today</div>' + cardHtml(x, false, true) + '</div>';
     }
