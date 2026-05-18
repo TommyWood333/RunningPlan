@@ -1,22 +1,15 @@
 const https = require('https');
 
-exports.handler = async (event) => {
-  const code = event.queryStringParameters?.code;
-  const error = event.queryStringParameters?.error;
+module.exports = async (req, res) => {
+  const code = req.query.code;
+  const error = req.query.error;
 
   if (error) {
-    return {
-      statusCode: 302,
-      headers: { Location: '/?error=' + error },
-      body: ''
-    };
+    return res.redirect(`/?error=${error}`);
   }
 
   if (!code) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({error: 'No authorization code'})
-    };
+    return res.status(400).json({error: 'No authorization code'});
   }
 
   try {
@@ -25,16 +18,9 @@ exports.handler = async (event) => {
     
     const redirectUrl = `/?strava_token=${tokenResponse.access_token}&athlete_name=${encodeURIComponent(athlete.firstname + ' ' + athlete.lastname)}&athlete_id=${athlete.id}`;
     
-    return {
-      statusCode: 302,
-      headers: { Location: redirectUrl },
-      body: ''
-    };
+    return res.redirect(redirectUrl);
   } catch (err) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({error: err.message})
-    };
+    return res.status(500).json({error: err.message});
   }
 };
 
@@ -44,7 +30,8 @@ function exchangeCode(code) {
       client_id: '246912',
       client_secret: process.env.STRAVA_CLIENT_SECRET,
       code: code,
-      grant_type: 'authorization_code'
+      grant_type: 'authorization_code',
+      redirect_uri: 'https://tomwoodsrunningapp.vercel.app/api/strava-callback'
     });
 
     const options = {
